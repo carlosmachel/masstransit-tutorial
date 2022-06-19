@@ -19,20 +19,26 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
 
         if (context.Message.CustomerNumber.Contains("TEST"))
         {
-            await context.RespondAsync<IOrderSubmissionRejected>(new
+            if(context.RequestId != null)
             {
-                InVar.Timestamp,
-                context.Message.OrderId,
-                context.Message.CustomerNumber,
-                Reason = $"Test Customer cannot submit orders: {context.Message.CustomerNumber}"
-            });
+                await context.RespondAsync<IOrderSubmissionRejected>(new
+                {
+                    InVar.Timestamp,
+                    context.Message.OrderId,
+                    context.Message.CustomerNumber,
+                    Reason = $"Test Customer cannot submit orders: {context.Message.CustomerNumber}"
+                });
+
+            }
+
 
             return;
         }
 
-        await context.RespondAsync<IOrderSubmissionAccepted>(new { 
-            InVar.Timestamp, 
-            context.Message.OrderId, 
-            context.Message.CustomerNumber });
+        if(context.RequestId != null)
+            await context.RespondAsync<IOrderSubmissionAccepted>(new { 
+                InVar.Timestamp, 
+                context.Message.OrderId, 
+                context.Message.CustomerNumber });
     }
 }
