@@ -10,11 +10,15 @@ public class OrderController : ControllerBase
 {
     private readonly ILogger<OrderController> _logger;
     private readonly IRequestClient<ISubmitOrder> _submitOrderRequestClient;
+    private readonly ISendEndpointProvider _sendEndpointProvider;
 
-    public OrderController(ILogger<OrderController> logger, IRequestClient<ISubmitOrder> submitOrderRequestClient)
+    public OrderController(ILogger<OrderController> logger, 
+        IRequestClient<ISubmitOrder> submitOrderRequestClient,
+        ISendEndpointProvider sendEndpointProvider)
     {
         _logger = logger;
         _submitOrderRequestClient = submitOrderRequestClient;
+        _sendEndpointProvider = sendEndpointProvider;
     }
 
     [HttpPost]
@@ -29,5 +33,21 @@ public class OrderController : ControllerBase
        
         //Passar Accepted nesses cenários.
         return Accepted(response.Message);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Put(Guid id, string customerNumber)
+    {
+        var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("exchange:submit-order"));
+
+        await endpoint.Send<ISubmitOrder>(new
+        {
+            OrderId = id,
+            InVar.Timestamp,
+            CustomerNumber = customerNumber
+        });
+
+        //Passar Accepted nesses cenários.
+        return Accepted();
     }
 }
