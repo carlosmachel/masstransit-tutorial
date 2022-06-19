@@ -26,7 +26,8 @@ public class OrderController : ControllerBase
             InVar.Timestamp,
             CustomerNumber = customerNumber
         });
-
-        return Ok(response.Message);
+       
+        //Passar Accepted nesses cenários.
+        return Accepted(response.Message);
     }
 }
