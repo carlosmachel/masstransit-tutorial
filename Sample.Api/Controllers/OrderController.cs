@@ -9,9 +9,9 @@ namespace Sample.Api.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly ILogger<OrderController> _logger;
-    private readonly IRequestClient<SubmitOrder> _submitOrderRequestClient;
+    private readonly IRequestClient<ISubmitOrder> _submitOrderRequestClient;
 
-    public OrderController(ILogger<OrderController> logger, IRequestClient<SubmitOrder> submitOrderRequestClient)
+    public OrderController(ILogger<OrderController> logger, IRequestClient<ISubmitOrder> submitOrderRequestClient)
     {
         _logger = logger;
         _submitOrderRequestClient = submitOrderRequestClient;
@@ -20,7 +20,7 @@ public class OrderController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(Guid id, string customerNumber)
     {
-        var response = await _submitOrderRequestClient.GetResponse<OrderSubmissionAccepted, OrderSubmissionRejected>(new
+        var response = await _submitOrderRequestClient.GetResponse<IOrderSubmissionAccepted, IOrderSubmissionRejected>(new
         {
             OrderId = id,
             InVar.Timestamp,

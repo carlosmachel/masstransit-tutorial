@@ -4,7 +4,7 @@ using Sample.Contracts;
 
 namespace Sample.Components;
 
-public class SubmitOrderConsumer : IConsumer<SubmitOrder>
+public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
 {
     private readonly ILogger<SubmitOrderConsumer> _logger;
 
@@ -13,13 +13,13 @@ public class SubmitOrderConsumer : IConsumer<SubmitOrder>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<SubmitOrder> context)
+    public async Task Consume(ConsumeContext<ISubmitOrder> context)
     {
         _logger.Log(LogLevel.Debug, "SubmitOrderConsumer: {ConsumerNumber}", context.Message.CustomerNumber);
 
         if (context.Message.CustomerNumber.Contains("TEST"))
         {
-            await context.RespondAsync<OrderSubmissionRejected>(new
+            await context.RespondAsync<IOrderSubmissionRejected>(new
             {
                 InVar.Timestamp,
                 context.Message.OrderId,
@@ -30,7 +30,7 @@ public class SubmitOrderConsumer : IConsumer<SubmitOrder>
             return;
         }
 
-        await context.RespondAsync<OrderSubmissionAccepted>(new { 
+        await context.RespondAsync<IOrderSubmissionAccepted>(new { 
             InVar.Timestamp, 
             context.Message.OrderId, 
             context.Message.CustomerNumber });

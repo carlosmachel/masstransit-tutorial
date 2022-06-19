@@ -1,8 +1,6 @@
 using MassTransit;
-using Sample.Components;
 using Sample.Contracts;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +22,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddMediator(cfg =>
+builder.Services.AddMassTransit(cfg =>
 {
-    cfg.AddConsumer<SubmitOrderConsumer>();
-    cfg.AddRequestClient<SubmitOrder>();
+    cfg.UsingRabbitMq();
+    cfg.AddRequestClient<ISubmitOrder>();
 });
 
 var app = builder.Build();
