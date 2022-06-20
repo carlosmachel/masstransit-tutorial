@@ -25,7 +25,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.UsingRabbitMq();
-    cfg.AddRequestClient<ISubmitOrder>(new Uri($"queue:submit-order"));
+
+    cfg.AddRequestClient<ISubmitOrder>(new Uri($"exchange:submit-order"));
+    cfg.AddRequestClient<ICheckOrder>();
 });
 
 var app = builder.Build();

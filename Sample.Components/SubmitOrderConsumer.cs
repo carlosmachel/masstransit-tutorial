@@ -35,6 +35,13 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
             return;
         }
 
+        await context.Publish<IOrderSubmited>(new
+        {
+            context.Message.OrderId,
+            context.Message.Timestamp,
+            context.Message.CustomerNumber
+        });
+
         if(context.RequestId != null)
             await context.RespondAsync<IOrderSubmissionAccepted>(new { 
                 InVar.Timestamp, 
