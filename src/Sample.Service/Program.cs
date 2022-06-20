@@ -1,6 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Sample.Components;
+using Sample.Components.Consumers;
 using Sample.Components.StateMachines;
 using Sample.Service;
 using Serilog;

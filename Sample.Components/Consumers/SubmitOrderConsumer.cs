@@ -13,9 +13,13 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
         _logger = logger;
     }
 
+    public SubmitOrderConsumer()
+    {
+    }
+
     public async Task Consume(ConsumeContext<ISubmitOrder> context)
     {
-        _logger.Log(LogLevel.Debug, "SubmitOrderConsumer: {ConsumerNumber}", context.Message.CustomerNumber);
+        _logger?.Log(LogLevel.Debug, "SubmitOrderConsumer: {ConsumerNumber}", context.Message.CustomerNumber);
 
         if (context.Message.CustomerNumber.Contains("TEST"))
         {
