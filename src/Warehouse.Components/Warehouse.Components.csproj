@@ -6,8 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-<<<<<<< Updated upstream
-=======
   <ItemGroup>
     <PackageReference Include="MassTransit" Version="8.0.3" />
   </ItemGroup>
@@ -16,5 +14,4 @@
     <ProjectReference Include="..\Warehouse.Contracts\Warehouse.Contracts.csproj" />
   </ItemGroup>
 
->>>>>>> Stashed changes
 </Project>
