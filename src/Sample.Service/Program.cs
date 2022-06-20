@@ -36,8 +36,9 @@ var host = Host.CreateDefaultBuilder(args)
 
             x.AddSagaStateMachine<OrderStateMachine, OrderState>(typeof(OrderStateMachineDefinition))
             .InMemoryRepository(); //no exemplo ele usa o redis.
-
-            x.UsingRabbitMq((context, cfg) => { cfg.ConfigureEndpoints(context); });
+           
+            x.UsingRabbitMq((context, cfg) => {                
+                cfg.ConfigureEndpoints(context); });
         });
         services.AddHostedService<Worker>();
     })

@@ -59,6 +59,5 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
     public Event<IOrderSubmited> OrderSubmitted { get; private set; }
     public Event<IOrderAccepted> OrderAccepted { get; private set; }
     public Event<ICheckOrder> OrderStatusRequested { get; private set; }
-
     public Event<ICustomerAccountClosed> AccountClosed { get; private set; }
 }
