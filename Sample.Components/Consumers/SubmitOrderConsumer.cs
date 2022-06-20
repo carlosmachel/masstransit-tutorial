@@ -27,7 +27,7 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
             {
                 await context.RespondAsync<IOrderSubmissionRejected>(new
                 {
-                    InVar.Timestamp,
+                    TimeStamp = InVar.Timestamp,
                     context.Message.OrderId,
                     context.Message.CustomerNumber,
                     Reason = $"Test Customer cannot submit orders: {context.Message.CustomerNumber}"
@@ -49,7 +49,7 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
         if (context.RequestId != null)
             await context.RespondAsync<IOrderSubmissionAccepted>(new
             {
-                InVar.Timestamp,
+                TimeStamp = InVar.Timestamp,
                 context.Message.OrderId,
                 context.Message.CustomerNumber
             });

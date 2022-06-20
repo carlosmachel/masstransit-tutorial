@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Sample.Components.StateMachines.OrderStateMachineActivities;
 using Sample.Contracts;
 
 namespace Sample.Components.StateMachines;
@@ -9,6 +10,7 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
     {
         //Correlaciona o Correlation do estado com a OrderId como a correlacao.
         Event(() => OrderSubmitted, x => x.CorrelateById(a => a.Message.OrderId));
+        Event(() => OrderAccepted, x => x.CorrelateById(a => a.Message.OrderId));
         Event(() => OrderStatusRequested, x =>
         {
             x.CorrelateById(a => a.Message.OrderId);
@@ -20,6 +22,7 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
                 }
             }));
         });
+        Event(() => AccountClosed, x => x.CorrelateBy((saga, context) => saga.CustomerNumber == context.Message.CustomerNumber));
 
         InstanceState(x => x.CurrentState);
 
@@ -35,7 +38,11 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
 
         //Indempotent
         During(Submitted,
-            Ignore(OrderSubmitted));
+            Ignore(OrderSubmitted),
+            When(AccountClosed)
+            .TransitionTo(Canceled),
+            When(OrderAccepted).Activity(x => x.OfType<AcceptOrderActivity>())
+            .TransitionTo(Accepted));
 
         DuringAny(
             When(OrderStatusRequested)
@@ -46,6 +53,12 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
     }
 
     public State Submitted { get; private set; }
+    public State Accepted { get; private set; }
+    public State Canceled { get; private set; }
+
     public Event<IOrderSubmited> OrderSubmitted { get; private set; }
+    public Event<IOrderAccepted> OrderAccepted { get; private set; }
     public Event<ICheckOrder> OrderStatusRequested { get; private set; }
+
+    public Event<ICustomerAccountClosed> AccountClosed { get; private set; }
 }
