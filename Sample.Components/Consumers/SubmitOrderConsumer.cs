@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Sample.Contracts;
 
-namespace Sample.Components;
+namespace Sample.Components.Consumers;
 
 public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
 {
@@ -19,7 +19,7 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
 
         if (context.Message.CustomerNumber.Contains("TEST"))
         {
-            if(context.RequestId != null)
+            if (context.RequestId != null)
             {
                 await context.RespondAsync<IOrderSubmissionRejected>(new
                 {
@@ -42,10 +42,20 @@ public class SubmitOrderConsumer : IConsumer<ISubmitOrder>
             context.Message.CustomerNumber
         });
 
-        if(context.RequestId != null)
-            await context.RespondAsync<IOrderSubmissionAccepted>(new { 
-                InVar.Timestamp, 
-                context.Message.OrderId, 
-                context.Message.CustomerNumber });
+        if (context.RequestId != null)
+            await context.RespondAsync<IOrderSubmissionAccepted>(new
+            {
+                InVar.Timestamp,
+                context.Message.OrderId,
+                context.Message.CustomerNumber
+            });
+    }
+}
+
+public class SubmitOrderConsumerDefinition : ConsumerDefinition<SubmitOrderConsumer>
+{
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<SubmitOrderConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.UseMessageRetry(r => r.Intervals(3, 1000));
     }
 }

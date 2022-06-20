@@ -27,15 +27,24 @@ public class OrderController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(Guid id, string customerNumber)
     {
-        var response = await _submitOrderRequestClient.GetResponse<IOrderSubmissionAccepted, IOrderSubmissionRejected>(new
+        var (accepted, rejected) = await _submitOrderRequestClient.GetResponse<IOrderSubmissionAccepted, IOrderSubmissionRejected>(new
         {
             OrderId = id,
             InVar.Timestamp,
             CustomerNumber = customerNumber
         });
        
-        //Passar Accepted nesses cenários.
-        return Accepted(response.Message);
+        if(accepted.IsCompletedSuccessfully)
+        {
+            var response = await accepted;
+
+            return Accepted(response.Message);
+        }
+        else
+        {
+            var response = await rejected;
+            return NotFound(response.Message.Reason);
+        }
     }
 
     [HttpGet]

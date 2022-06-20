@@ -1,11 +1,10 @@
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sample.Components;
-using Sample.Components.StateMachine;
+using Sample.Components.StateMachines;
 using Sample.Service;
 using Serilog;
 using Serilog.Events;
-using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -35,7 +34,7 @@ var host = Host.CreateDefaultBuilder(args)
         {
             x.AddConsumer<SubmitOrderConsumer>();
 
-            x.AddSagaStateMachine<OrderStateMachine, OrderState>()
+            x.AddSagaStateMachine<OrderStateMachine, OrderState>(typeof(OrderStateMachineDefinition))
             .InMemoryRepository(); //no exemplo ele usa o redis.
 
             x.UsingRabbitMq((context, cfg) => { cfg.ConfigureEndpoints(context); });
