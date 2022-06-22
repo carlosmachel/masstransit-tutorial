@@ -34,6 +34,7 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
                 context.Saga.CustomerNumber = context.Message.CustomerNumber;
                 context.Saga.Updated = DateTime.UtcNow;
             })
+            .SendAsync(new Uri("queue:order-accepted-notification"), context => context.Init<IOrderAcceptedNotification>(new { OrderId = context.Message.OrderId }))
             .TransitionTo(Submitted));
 
         //Indempotent
@@ -41,8 +42,11 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
             Ignore(OrderSubmitted),
             When(AccountClosed)
             .TransitionTo(Canceled),
-            When(OrderAccepted).Activity(x => x.OfType<AcceptOrderActivity>())
+            When(OrderAccepted).Activity(x => x.OfType<AcceptOrderActivity>())            
             .TransitionTo(Accepted));
+
+
+
 
         DuringAny(
             When(OrderStatusRequested)

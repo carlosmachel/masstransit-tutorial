@@ -1,6 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sample.Components.Consumers;
+using Sample.Components.Notificator;
+using Sample.Components.Notificator.interfaces;
 using Sample.Components.StateMachines;
 using Sample.Service;
 using Serilog;
@@ -27,12 +29,14 @@ var host = Host.CreateDefaultBuilder(args)
         logging.AddSerilog(dispose: true);
         logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
     })
-    .ConfigureServices((hostContext, services) =>
-    {
+    .ConfigureServices(async (hostContext, services) =>
+    {        
+        services.AddSingleton<IOrderHubNotificator>(new OrderHubNotificator(hostContext.Configuration.GetValue<string>("Websocket:OrderNotificationHub")));
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(x =>
         {
             x.AddConsumer<SubmitOrderConsumer>();
+            x.AddConsumer<OrderAcceptedNotificationConsumer>();
 
             x.AddSagaStateMachine<OrderStateMachine, OrderState>(typeof(OrderStateMachineDefinition))
             .InMemoryRepository(); //no exemplo ele usa o redis.
