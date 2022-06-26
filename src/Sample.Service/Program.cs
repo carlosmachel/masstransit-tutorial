@@ -1,7 +1,9 @@
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sample.Components.Consumers;
+using Sample.Components.CourierActivities;
 using Sample.Components.StateMachines;
+using Sample.Components.StateMachines.OrderStateMachineActivities;
 using Sample.Service;
 using Serilog;
 using Serilog.Events;
@@ -29,10 +31,12 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((hostContext, services) =>
     {
+        services.AddScoped<AcceptOrderActivity>();
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(x =>
         {
-            x.AddConsumer<SubmitOrderConsumer>();
+            x.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
+            x.AddActivitiesFromNamespaceContaining<AllocateInventoryActivity>();
 
             x.AddSagaStateMachine<OrderStateMachine, OrderState>(typeof(OrderStateMachineDefinition))
             .InMemoryRepository(); //no exemplo ele usa o redis.

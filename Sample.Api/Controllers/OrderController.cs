@@ -12,18 +12,22 @@ public class OrderController : ControllerBase
     private readonly IRequestClient<ISubmitOrder> _submitOrderRequestClient;
     private readonly IRequestClient<ICheckOrder> _checkOrderRequestClient;
     private readonly ISendEndpointProvider _sendEndpointProvider;
+    private readonly IPublishEndpoint publishEndpoint;
 
     public OrderController(ILogger<OrderController> logger, 
         IRequestClient<ISubmitOrder> submitOrderRequestClient,
         IRequestClient<ICheckOrder> checkOrderRequestClient,
-        ISendEndpointProvider sendEndpointProvider)
+        ISendEndpointProvider sendEndpointProvider,
+        IPublishEndpoint publishEndpoint)
     {
         _logger = logger;
         _submitOrderRequestClient = submitOrderRequestClient;
             _checkOrderRequestClient = checkOrderRequestClient;
         _sendEndpointProvider = sendEndpointProvider;
+        this.publishEndpoint = publishEndpoint;
     }
 
+    /*
     [HttpPost]
     public async Task<IActionResult> Post(Guid id, string customerNumber)
     {
@@ -46,6 +50,7 @@ public class OrderController : ControllerBase
             return NotFound(response.Message.Reason);
         }
     }
+    */
 
     [HttpGet]
     public async Task<IActionResult> Get(Guid id)
@@ -64,8 +69,20 @@ public class OrderController : ControllerBase
         }
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Put(Guid id, string customerNumber)
+    [HttpPost(), Route("accept-order")]
+    public async Task<IActionResult> AcceptOrderAsync(Guid id)
+    {
+        await publishEndpoint.Publish<IOrderAccepted>(new
+        {
+            OrderId = id,
+            InVar.Timestamp
+        });
+
+        return Accepted();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SubmitOrderAsync(Guid id, string customerNumber)
     {
         var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("exchange:submit-order"));
 

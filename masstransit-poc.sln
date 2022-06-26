@@ -21,9 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Service", "src\Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Contracts", "src\Warehouse.Contracts\Warehouse.Contracts.csproj", "{392CCAFD-E77A-438F-89F2-10ADF8B06DFC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D3DD457-E6A1-448A-8089-B83FCD1456E5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Components", "src\Warehouse.Components\Warehouse.Components.csproj", "{5E479C84-F9A2-4B25-81C4-512668A59CEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Components", "src\Warehouse.Components\Warehouse.Components.csproj", "{5E479C84-F9A2-4B25-81C4-512668A59CEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,7 +69,7 @@ Global
 		{C9882BDD-CEA2-4856-8BEE-95E58FC616E3} = {784430AE-893E-457A-ADEA-5718CD7B9AC9}
 		{E93B7D14-178A-45E7-B2ED-874CFCDA4386} = {6F6E43A4-747E-4C90-8299-EAB313AE7D24}
 		{392CCAFD-E77A-438F-89F2-10ADF8B06DFC} = {6F6E43A4-747E-4C90-8299-EAB313AE7D24}
-		{5E479C84-F9A2-4B25-81C4-512668A59CEC} = {3D3DD457-E6A1-448A-8089-B83FCD1456E5}
+		{5E479C84-F9A2-4B25-81C4-512668A59CEC} = {6F6E43A4-747E-4C90-8299-EAB313AE7D24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {017D82D7-75B1-471A-AE98-7D23DFA118B3}

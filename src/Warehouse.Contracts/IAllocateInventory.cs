@@ -1,10 +1,17 @@
 ﻿namespace Warehouse.Contracts;
 
-public class IAllocateInventory
+public interface IAllocateInventory
 {
     Guid AllocationId { get; }
 
     string ItemNumber { get; }
 
     decimal Quantity { get; }
+}
+
+public interface  AllocationReleaseRequested
+{
+    Guid AllocationId { get; }
+
+    string Reason { get; }
 }
